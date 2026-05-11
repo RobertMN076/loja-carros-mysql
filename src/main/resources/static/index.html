@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Loja de Carros</title>
+</head>
+<body style="font-family: Arial, sans-serif; padding: 20px;">
+
+<h1>Gerenciamento - Loja de Carros</h1>
+
+<h3>Cadastrar Novo Veículo</h3>
+<input type="text" id="marca" placeholder="Marca (ex: Toyota)">
+<input type="text" id="modelo" placeholder="Modelo (ex: Corolla)">
+<button onclick="cadastrar()">Salvar</button>
+
+<h3>Veículos Cadastrados</h3>
+<button onclick="carregarVeiculos()">Atualizar Lista</button>
+<ul id="lista"></ul>
+
+<script>
+    async function cadastrar() {
+        const marca = document.getElementById('marca').value;
+        const modelo = document.getElementById('modelo').value;
+
+        await fetch('/api/veiculos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ marca, modelo })
+        });
+
+        document.getElementById('marca').value = '';
+        document.getElementById('modelo').value = '';
+        carregarVeiculos();
+    }
+
+    async function carregarVeiculos() {
+        const response = await fetch('/api/veiculos');
+        const veiculos = await response.json();
+        const lista = document.getElementById('lista');
+        lista.innerHTML = '';
+
+        veiculos.forEach(v => {
+            const li = document.createElement('li');
+            li.innerText = `${v.id} - ${v.marca} ${v.modelo} `;
+
+            const btnRemover = document.createElement('button');
+            btnRemover.innerText = 'Remover';
+            btnRemover.onclick = () => remover(v.id);
+
+            li.appendChild(btnRemover);
+            lista.appendChild(li);
+        });
+    }
+
+    async function remover(id) {
+        await fetch(`/api/veiculos/${id}`, { method: 'DELETE' });
+        carregarVeiculos();
+    }
+
+    // Carrega a lista ao abrir a página
+    carregarVeiculos();
+</script>
+</body>
+</html>
