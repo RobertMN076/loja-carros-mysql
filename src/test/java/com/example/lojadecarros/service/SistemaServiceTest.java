@@ -59,7 +59,7 @@ class SistemaServiceTest {
     @Test
     void deveRealizarLoginComSucesso() {
         boolean sucesso = service.login("admin", "1234");
-        assertFalse(sucesso);
+        assertTrue(sucesso);
     }
 
     @Test
