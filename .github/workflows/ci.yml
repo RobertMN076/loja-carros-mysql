@@ -1,4 +1,4 @@
-name: Java CI com Maven
+name: Java CI com Maven e MySQL
 
 on:
   push:
@@ -9,6 +9,17 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    # Cria um container MySQL temporário no GitHub
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: lojadb_test
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
       - uses: actions/checkout@v4
@@ -21,4 +32,7 @@ jobs:
           cache: maven
 
       - name: Build e Testes com Maven
+        env:
+          # Força o Spring Boot a usar a senha "root" dentro do GitHub Actions
+          SPRING_DATASOURCE_PASSWORD: root
         run: mvn -B test
