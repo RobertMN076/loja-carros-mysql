@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-class SistemaControllerIT {
+class SistemaControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -48,17 +48,22 @@ class SistemaControllerIT {
     }
 
     @Test
-    @Sql(statements = "INSERT INTO veiculo (id, marca, modelo) VALUES (100, 'Ford', 'Fiesta')")
     void deveBuscarCarroPorId() throws Exception {
-        mockMvc.perform(get("/api/veiculos"))
+        // Salva o dado no banco
+        Veiculo carroSalvo = repository.save(new Veiculo("Ford", "Fiesta"));
+
+        // Faz o GET passando o ID gerado na URL (Ex: /api/veiculos/1)
+        mockMvc.perform(get("/api/veiculos/" + carroSalvo.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].marca").value("Ford"));
+                .andExpect(jsonPath("$.marca").value("Ford"));
     }
 
     @Test
-    @Sql(statements = "INSERT INTO veiculo (id, marca, modelo) VALUES (101, 'Chevrolet', 'Onix')")
     void deveExcluirCarroComSucesso() throws Exception {
-        mockMvc.perform(delete("/api/veiculos/101"))
+        // Salva e pega o ID verdadeiro gerado pelo MySQL
+        Veiculo carroSalvo = repository.save(new Veiculo("Chevrolet", "Onix"));
+
+        mockMvc.perform(delete("/api/veiculos/" + carroSalvo.getId()))
                 .andExpect(status().isOk());
     }
 

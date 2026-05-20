@@ -1,7 +1,9 @@
 package com.example.lojadecarros.controller;
 
 import com.example.lojadecarros.model.Veiculo;
+import com.example.lojadecarros.repository.VeiculoRepository;
 import com.example.lojadecarros.service.SistemaService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,7 +12,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class SistemaController {
-
+    @Autowired
+    private VeiculoRepository repository;
     private final SistemaService service;
 
     public SistemaController(SistemaService service) {
@@ -30,9 +33,11 @@ public class SistemaController {
         return service.cadastrar(veiculo);
     }
 
-    @GetMapping("/veiculos")
-    public List<Veiculo> listar() {
-        return service.listarTodos();
+    @GetMapping("/veiculos/{id}")
+    public ResponseEntity<Veiculo> buscarPorId(@PathVariable Long id) {
+        return repository.findById(id)
+                .map(veiculo -> ResponseEntity.ok(veiculo))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/veiculos/{id}")
