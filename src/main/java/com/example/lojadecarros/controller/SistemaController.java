@@ -30,7 +30,7 @@ public class SistemaController {
         return ResponseEntity.ok(lista);
     }
 
-    // 3. BUSCAR POR ID (GET /api/veiculos/{id})
+
     @GetMapping("/{id}")
     public ResponseEntity<Veiculo> buscarPorId(@PathVariable Long id) {
         return service.buscarPorId(id)

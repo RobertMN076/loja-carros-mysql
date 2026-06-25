@@ -1,0 +1,73 @@
+### TESTE 2 - Tentar acessar endpoint protegido sem login
+GET http://localhost:8080/api/veiculos
+
+### FAZER LOGIN (Gerar o Token)
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "123456"
+}
+
+### TESTE 1 - Tentar cadastrar com payload XSS
+POST http://localhost:8080/api/veiculos
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJST0xFX0dFUkVOVEUiLCJpYXQiOjE3ODExNzgyMTgsImV4cCI6MTc4MTI2NDYxOH0.ORnbNHCIl6HHDvqFuNwFM8eZVCCb1BZpcls_MdYLYRw
+Content-Type: application/json
+
+{
+  "marca": "<script>alert('XSS')</script>",
+  "modelo": "Corolla"
+}
+
+### TESTE 3.1 - Campo obrigatório vazio
+POST http://localhost:8080/api/veiculos
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJST0xFX0dFUkVOVEUiLCJpYXQiOjE3ODExNzgyMTgsImV4cCI6MTc4MTI2NDYxOH0.ORnbNHCIl6HHDvqFuNwFM8eZVCCb1BZpcls_MdYLYRw
+Content-Type: application/json
+
+{
+  "marca": "",
+  "modelo": "Civic"
+}
+
+### TESTE 3.2 - String muito grande
+POST http://localhost:8080/api/veiculos
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJST0xFX0dFUkVOVEUiLCJpYXQiOjE3ODExNzgyMTgsImV4cCI6MTc4MTI2NDYxOH0.ORnbNHCIl6HHDvqFuNwFM8eZVCCb1BZpcls_MdYLYRw
+Content-Type: application/json
+
+{
+  "marca": "Honda",
+  "modelo": "Civicccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+}
+
+### TESTE 3.3 - Valores inválidos
+POST http://localhost:8080/api/veiculos
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJST0xFX0dFUkVOVEUiLCJpYXQiOjE3ODExNzgyMTgsImV4cCI6MTc4MTI2NDYxOH0.ORnbNHCIl6HHDvqFuNwFM8eZVCCb1BZpcls_MdYLYRw
+Content-Type: application/json
+
+{
+  "marca": null,
+  "modelo": 12345
+}
+
+
+### TESTE 5.1 - Tentar criar um vendedor SEM estar logado (Tem que dar erro 403)
+POST http://localhost:8080/api/usuarios
+Content-Type: application/json
+
+{
+  "username": "joao_vendedor",
+  "password": "123",
+  "role": "ROLE_VENDEDOR"
+}
+
+### TESTE 5.2 - Tentar criar um vendedor logado como GERENTE (Tem que dar Sucesso 200)
+POST http://localhost:8080/api/usuarios
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJST0xFX0dFUkVOVEUiLCJpYXQiOjE3ODExNzgyMTgsImV4cCI6MTc4MTI2NDYxOH0.ORnbNHCIl6HHDvqFuNwFM8eZVCCb1BZpcls_MdYLYRw
+Content-Type: application/json
+
+{
+  "username": "joao_vendedor",
+  "password": "123",
+  "role": "ROLE_VENDEDOR"
+}
