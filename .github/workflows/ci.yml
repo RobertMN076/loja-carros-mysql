@@ -35,6 +35,6 @@ jobs:
         env:
           # Força o Spring Boot a usar a senha "root" dentro do GitHub Actions
           SPRING_DATASOURCE_PASSWORD: root
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Nativo do GitHub, não mexa aqui
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}   # O token que você criou no SonarCloud
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=RobertMN076_loja-carros-mysql
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=RobertMN076_loja-carros-mysql -Dsonar.organization=robertmn076 -Dsonar.host.url=https://sonarcloud.io
