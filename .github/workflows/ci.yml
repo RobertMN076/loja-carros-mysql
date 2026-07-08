@@ -16,7 +16,7 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: lojadb_test
+          MYSQL_DATABASE: Giulio # Alterado para Giulio para coincidir com o application-test.properties
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
@@ -31,8 +31,10 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Build e Testes com Maven
+      - name: Build, Testes e Análise com SonarCloud
         env:
           # Força o Spring Boot a usar a senha "root" dentro do GitHub Actions
           SPRING_DATASOURCE_PASSWORD: root
-        run: mvn -B test
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Nativo do GitHub, não mexa aqui
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}   # O token que você criou no SonarCloud
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=RobertMN076_loja-carros-mysql

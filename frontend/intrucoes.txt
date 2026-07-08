@@ -1,0 +1,32 @@
+======================================================
+INSTRUÇÕES DE DEPLOY E EXECUÇÃO - AWS CLOUD
+======================================================
+
+1. CONFIGURAÇÃO DO BACKEND (Spring Boot .JAR)
+---------------------------------------------
+- O pacote .jar gerado está configurado para se conectar ao banco de dados utilizando propriedades padrão.
+- Para a execução na instância da AWS, as credenciais de produção do banco de dados (AWS RDS ou instância local na nuvem) devem ser injetadas via argumentos de linha de comando ou variáveis de ambiente no momento da inicialização:
+
+  java -jar GiulioBackend.jar --spring.datasource.url=jdbc:mysql://<ENDPOINT_DO_BANCO>:3306/Giulio --spring.datasource.username=<USUARIO> --spring.datasource.password=<SENHA>
+
+2. CONFIGURAÇÃO DO FRONTEND
+---------------------------------------------
+- O arquivo index.html possui detecção dinâmica de Host (window.location.host).
+- Caso o frontend seja servido de forma independente (ex: via S3 ou Nginx em portas distintas), certifique-se de que o mecanismo de CORS esteja devidamente habilitado no SecurityConfigurations do backend para o endereço correspondente.
+- Se o frontend for servido na mesma origem/porta do backend, as requisições serão mapeadas dinamicamente para o caminho '/api'.
+
+3. CREDENCIAIS ADMINISTRATIVAS PADRÃO
+---------------------------------------------
+O sistema utiliza a classe DataSeeder para realizar a carga inicial do primeiro usuário caso a tabela esteja vazia:
+
+Usuário: admin
+Senha: 123456
+
+4. ENDPOINTS CONSUMIDOS
+---------------------------------------------
+- POST /api/auth/login
+- GET /api/veiculos
+- POST /api/veiculos
+- DELETE /api/veiculos/{id}
+
+======================================================
