@@ -1,5 +1,6 @@
 package com.example.lojadecarros.controller;
 
+import com.example.lojadecarros.dto.DadosCadastroVeiculo;
 import com.example.lojadecarros.model.Veiculo;
 import com.example.lojadecarros.service.SistemaService;
 import jakarta.validation.Valid;
@@ -18,8 +19,11 @@ public class SistemaController {
 
     // 1. CADASTRAR (POST /api/veiculos)
     @PostMapping
-    public ResponseEntity<Veiculo> cadastrar(@Valid @RequestBody Veiculo veiculo) {
-        Veiculo salvo = service.cadastrar(veiculo);
+    public ResponseEntity<Veiculo> cadastrar(@Valid @RequestBody DadosCadastroVeiculo dados) {
+        // Converte o DTO para a Entidade antes de salvar
+        Veiculo novoVeiculo = new Veiculo(dados.marca(), dados.modelo());
+        Veiculo salvo = service.cadastrar(novoVeiculo);
+
         return ResponseEntity.ok(salvo);
     }
 
@@ -30,7 +34,7 @@ public class SistemaController {
         return ResponseEntity.ok(lista);
     }
 
-
+    // 3. BUSCAR POR ID (GET /api/veiculos/{id})
     @GetMapping("/{id}")
     public ResponseEntity<Veiculo> buscarPorId(@PathVariable Long id) {
         return service.buscarPorId(id)
